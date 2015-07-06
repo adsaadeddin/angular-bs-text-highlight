@@ -2,9 +2,10 @@ angular.module('angular-bs-text-highlight', [])
 .directive('textHighlight', function($interpolate) {
 	return {
 		scope: {
-			textHighlight: '=',
+			textHighlight: '=?',
 			textHighlightTags: '=?',
 			textHighlightWrapper: '=?',
+			textHighlightPopup: '=?',
 		},
 		restrict: 'AE',
 		transclude: true,
@@ -15,8 +16,9 @@ angular.module('angular-bs-text-highlight', [])
 			if (!$scope.textHighlightWrapper) $scope.textHighlightWrapper = '<span class="label label-info">{{item.text}}</span>';
 			// }}}
 
-			// Refresher function {{{
-			$scope.refresh = function() {
+			// Keyword highlighting refresher function {{{
+			$scope.refreshKeywords = function() {
+				if (!$scope.textHighlightTags) return;
 				var matches = [];
 				$element.find($scope.textHighlightTags.join(', ')).each(function(elemIndex) {
 					var me = $(this);
@@ -68,14 +70,45 @@ angular.module('angular-bs-text-highlight', [])
 					}
 				});
 			};
-			// }}}
 
 			// Watchers {{{
-			// If any child changes - refresh
-			$scope.$watch(function() { return $element.text().length }, $scope.refresh);
+			$scope.$watch(function() { return $element.text().length }, $scope.refreshKeywords);
+			$scope.$watchGroup(['textHighlight', 'textHighlightTags', 'textHighlightWrapper'], $scope.refreshKeywords);
+			// }}}
+			// }}}
 
-			// If any of our options change - refresh
-			$scope.$watchGroup(['textHighlight', 'textHighlightTags', 'textHighlightWrapper'], $scope.refresh);
+			// Apply popup behaviour (if textHighlightPopup is specified) {{{
+			$scope.getSelected = function() {
+				if (window.getSelection) {
+					return window.getSelection().toString();
+				} else if (document.getSelection) {
+					return document.getSelection().toString();
+				} else if (document.selection) {
+					document.selection.createRange();
+					return selection.text;
+				} else {
+					return;
+				}
+			};
+
+			$scope.$watch('textHighlightPopup', function() {
+				if (!$element.hasClass('angular-ng-text-highlight-bind'))
+					$element
+						.addClass('ng-text-highlight-bind')
+						.on('mouseup', function(e) {
+							var selection = $scope.getSelected();
+							if (selection) {
+								$scope.$apply(function() {
+									$scope.$emit('selectedText', selection);
+								});
+								$($scope.textHighlightPopup)
+									.css({top: e.offsetY, left: e.offsetX})
+									.show();
+							} else {
+								$($scope.textHighlightPopup).hide();
+							}
+						});
+			});
 			// }}}
 		}
 	}
