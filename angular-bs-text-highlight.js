@@ -19,10 +19,11 @@ angular.module('angular-bs-text-highlight', [])
 				var matches = [];
 				$element.find($scope.textHighlightTags.join(', ')).each(function(elemIndex) {
 					var me = $(this);
-					var ih = me.html();
+					var ih = me.html().strToLower();
 
 					// Find all matches for all keywords
-					angular.forEach($scope.textHighlight, function(keyword) {
+					angular.forEach($scope.textHighlight, function(rawKeyword) {
+						var keyword = rawKeyword.strToLower();
 						var offset = 0;
 						while (1) {
 							var nextMatch = ih.indexOf(keyword, offset);
