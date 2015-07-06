@@ -15,15 +15,16 @@ angular.module('angular-bs-text-highlight', [])
 			if (!$scope.textHighlightWrapper) $scope.textHighlightWrapper = '<span class="label label-info">{{item.text}}</span>';
 			// }}}
 
-			$scope.$watch('textHighlight + textHighlightTags + textHighlightWrapper', function() {
+			// Refresher function {{{
+			$scope.refresh = function() {
 				var matches = [];
 				$element.find($scope.textHighlightTags.join(', ')).each(function(elemIndex) {
 					var me = $(this);
-					var ih = me.html().strToLower();
+					var ih = me.html().toLowerCase();
 
 					// Find all matches for all keywords
 					angular.forEach($scope.textHighlight, function(rawKeyword) {
-						var keyword = rawKeyword.strToLower();
+						var keyword = rawKeyword.toLowerCase();
 						var offset = 0;
 						while (1) {
 							var nextMatch = ih.indexOf(keyword, offset);
@@ -66,7 +67,16 @@ angular.module('angular-bs-text-highlight', [])
 						item.elem.html(html.substr(0, item.position) + interpolated + html.substr(item.position + item.length));
 					}
 				});
-			});
+			};
+			// }}}
+
+			// Watchers {{{
+			// If any child changes - refresh
+			$scope.$watch(function() { return $element.text().length }, $scope.refresh);
+
+			// If any of our options change - refresh
+			$scope.$watchGroup(['textHighlight', 'textHighlightTags', 'textHighlightWrapper'], $scope.refresh);
+			// }}}
 		}
 	}
 });
