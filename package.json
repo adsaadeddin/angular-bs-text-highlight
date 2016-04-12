@@ -1,0 +1,29 @@
+{
+  "name": "angular-bs-text-highlight",
+  "version": "1.0.0",
+  "description": "AngularJS + Bootstrap text highlighting",
+  "main": "angular-bs-text-highlight.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hash-bang/angular-bs-text-highlight.git"
+  },
+  "keywords": [
+    "angular",
+    "bootstrap",
+    "text",
+    "highlight",
+    "highlighting",
+    "ui"
+  ],
+  "author": "Matt Carter <m@ttcarter.com> (https://github.com/hash-bang)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hash-bang/angular-bs-text-highlight/issues"
+  },
+  "homepage": "https://github.com/hash-bang/angular-bs-text-highlight#readme",
+  "dependencies": {
+    "angular": "^1.5.3",
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.3"
+  }
+}
